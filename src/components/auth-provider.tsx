@@ -70,13 +70,46 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signIn = async (email: string, password: string) => {
-    // For now, redirect to OAuth (we didn't implement email/password)
-    throw new Error('Email/password login not implemented. Please use Google or GitHub.');
+    try {
+      const response = await apiRequest('POST', '/api/auth/login', {
+        email,
+        password,
+      });
+      
+      const data = await response.json();
+      
+      if (data.user && data.token) {
+        setAuthToken(data.token);
+        setUser(data.user);
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error: any) {
+      console.error('Login error:', error);
+      throw new Error(error.message || 'Login failed');
+    }
   };
 
   const signUp = async (email: string, password: string, name?: string) => {
-    // For now, redirect to OAuth (we didn't implement email/password)
-    throw new Error('Email/password signup not implemented. Please use Google or GitHub.');
+    try {
+      const response = await apiRequest('POST', '/api/auth/register', {
+        email,
+        password,
+        name,
+      });
+      
+      const data = await response.json();
+      
+      if (data.user && data.token) {
+        setAuthToken(data.token);
+        setUser(data.user);
+      } else {
+        throw new Error('Invalid response from server');
+      }
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      throw new Error(error.message || 'Registration failed');
+    }
   };
 
   const signOut = async () => {
