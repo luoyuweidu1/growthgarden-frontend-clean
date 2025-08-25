@@ -102,7 +102,7 @@ export function GoalActionsModal({ isOpen, onClose, goal, actions }: GoalActions
   const { t } = useLanguage();
 
   const completeMutation = useMutation({
-    mutationFn: async (actionId: number) => {
+    mutationFn: async (actionId: string) => {
       await apiRequest("PATCH", `/api/actions/${actionId}/complete`);
     },
     onSuccess: (_, actionId) => {
@@ -151,7 +151,7 @@ export function GoalActionsModal({ isOpen, onClose, goal, actions }: GoalActions
     },
   });
 
-  const handleCompleteAction = (actionId: number) => {
+  const handleCompleteAction = (actionId: string) => {
     completeMutation.mutate(actionId);
   };
 
