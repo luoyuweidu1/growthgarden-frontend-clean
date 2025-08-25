@@ -120,10 +120,25 @@ export function GoalActionsModal({ isOpen, onClose, goal, actions }: GoalActions
         setIsReflectionModalOpen(true);
       }
     },
-    onError: (error) => {
+    onError: async (error: any) => {
+      console.error('Complete action error:', error);
+      let errorMessage = "Failed to complete action. Please try again.";
+      
+      // Try to extract the actual error message from the response
+      try {
+        if (error?.response?.json) {
+          const errorData = await error.response.json();
+          errorMessage = errorData.error || errorMessage;
+        } else if (error?.message) {
+          errorMessage = error.message;
+        }
+      } catch (e) {
+        // Fallback to default message if we can't parse the error
+      }
+      
       toast({
         title: "Error",
-        description: "Failed to complete action. Please try again.",
+        description: errorMessage,
         variant: "destructive",
       });
     },
