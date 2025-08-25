@@ -20,7 +20,7 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
   const [formData, setFormData] = useState<Partial<Action>>({
     title: '',
     description: '',
-    goalId: goals.length > 0 ? goals[0].id : 0,
+    goalId: goals.length > 0 ? goals[0].id : '',
     xpReward: 15,
     personalReward: '',
     dueDate: null,
@@ -35,7 +35,7 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
       setFormData({
         title: '',
         description: '',
-        goalId: goals.length > 0 ? goals[0].id : 0,
+        goalId: goals.length > 0 ? goals[0].id : '',
         xpReward: 15,
         personalReward: '',
         dueDate: null,
@@ -90,7 +90,7 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
     const actionData: Partial<Action> = {
       title: formData.title.trim(),
       description: formData.description?.trim() || null,
-      goalId: formData.goalId || (goals.length > 0 ? goals[0].id : 0),
+      goalId: formData.goalId || (goals.length > 0 ? goals[0].id : ''),
       xpReward: formData.xpReward || 15,
       personalReward: formData.personalReward?.trim() || null,
       dueDate: formData.dueDate || null,
@@ -128,16 +128,16 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
           <div>
             <Label className="text-sm font-medium text-sage-700">Select Goal</Label>
             <Select
-              value={(formData.goalId || 0) > 0 ? (formData.goalId || 0).toString() : ""}
-              onValueChange={(value) => setFormData(prev => ({ ...prev, goalId: parseInt(value) }))}
+              value={formData.goalId || ""}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, goalId: value }))}
             >
               <SelectTrigger className="mt-2 organic-shape border-sage-200 focus:border-primary transition-all duration-300">
                 <SelectValue placeholder="Choose which goal this action supports" />
               </SelectTrigger>
               <SelectContent className="biomorphic-card">
                 {goals.map((goal) => (
-                  <SelectItem key={goal.id} value={goal.id.toString()}>
-                    {goal.name} (Level {goal.currentLevel})
+                  <SelectItem key={goal.id} value={goal.id}>
+                    {goal.name} (Level {goal.currentLevel || 1})
                   </SelectItem>
                 ))}
               </SelectContent>
