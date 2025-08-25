@@ -21,8 +21,8 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
     title: '',
     description: '',
     goalId: goals.length > 0 ? goals[0].id : '',
-    xpReward: 15,
-    personalReward: '',
+    xpReward: 10,
+    priority: 'medium',
     dueDate: null,
   });
 
@@ -36,8 +36,8 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
         title: '',
         description: '',
         goalId: goals.length > 0 ? goals[0].id : '',
-        xpReward: 15,
-        personalReward: '',
+        xpReward: 10,
+        priority: 'medium',
         dueDate: null,
       });
     }
@@ -87,13 +87,13 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
       return;
     }
 
-    const actionData: Partial<Action> = {
+    const actionData = {
       title: formData.title.trim(),
-      description: formData.description?.trim() || null,
+      description: formData.description?.trim() || undefined,
       goalId: formData.goalId || (goals.length > 0 ? goals[0].id : ''),
-      xpReward: formData.xpReward || 15,
-      personalReward: formData.personalReward?.trim() || null,
-      dueDate: formData.dueDate || null,
+      xpReward: formData.xpReward || 10,
+      priority: (formData.priority as 'low' | 'medium' | 'high') || 'medium',
+      dueDate: formData.dueDate ? new Date(formData.dueDate + 'T12:00:00.000Z').toISOString() : undefined,
     };
     
     createActionMutation.mutate(actionData);
@@ -172,9 +172,10 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
                 </SelectTrigger>
                 <SelectContent className="biomorphic-card">
                   <SelectItem value="5">5 XP (Quick task)</SelectItem>
-                  <SelectItem value="15">15 XP (Regular task)</SelectItem>
+                  <SelectItem value="10">10 XP (Regular task)</SelectItem>
                   <SelectItem value="25">25 XP (Important task)</SelectItem>
                   <SelectItem value="50">50 XP (Major milestone)</SelectItem>
+                  <SelectItem value="100">100 XP (Epic milestone)</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -186,10 +187,10 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
               <Input
                 id="dueDate"
                 type="date"
-                value={formData.dueDate ? new Date(formData.dueDate).toISOString().split('T')[0] : ''}
+                value={formData.dueDate ? (typeof formData.dueDate === 'string' ? formData.dueDate : new Date(formData.dueDate).toISOString().split('T')[0]) : ''}
                 onChange={(e) => setFormData(prev => ({ 
                   ...prev, 
-                  dueDate: e.target.value ? new Date(e.target.value) : null 
+                  dueDate: e.target.value || null 
                 }))}
                 className="mt-2 organic-shape border-sage-200 focus:border-primary transition-all duration-300"
               />
@@ -197,19 +198,20 @@ export function ActionCreationModal({ isOpen, onClose, goals }: ActionCreationMo
           </div>
 
           <div>
-            <Label htmlFor="personalReward" className="text-sm font-medium text-sage-700">
-              Personal Reward (Optional)
-            </Label>
-            <Input
-              id="personalReward"
-              value={formData.personalReward || ''}
-              onChange={(e) => setFormData(prev => ({ ...prev, personalReward: e.target.value }))}
-              placeholder="e.g., Treat yourself to ice cream, Watch an episode, Take a break..."
-              className="mt-2 organic-shape border-sage-200 focus:border-primary transition-all duration-300"
-            />
-            <p className="text-xs text-sage-500 mt-1">
-              Set a personal reward to motivate yourself when completing this task
-            </p>
+            <Label className="text-sm font-medium text-sage-700">Priority</Label>
+            <Select
+              value={formData.priority || 'medium'}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, priority: value }))}
+            >
+              <SelectTrigger className="mt-2 organic-shape border-sage-200 focus:border-primary transition-all duration-300">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="biomorphic-card">
+                <SelectItem value="low">Low Priority</SelectItem>
+                <SelectItem value="medium">Medium Priority</SelectItem>
+                <SelectItem value="high">High Priority</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           
           <div className="flex justify-end space-x-4 pt-6">
