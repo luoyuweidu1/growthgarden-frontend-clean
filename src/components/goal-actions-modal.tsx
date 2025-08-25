@@ -39,7 +39,7 @@ const getPlantTypeName = (plantType: string) => {
 };
 
 const getActionStatus = (action: Action) => {
-  if (action.isCompleted) return 'completed';
+  if (action.status === 'completed') return 'completed';
   if (action.dueDate) {
     const now = new Date();
     const dueDate = new Date(action.dueDate);
@@ -227,8 +227,8 @@ export function GoalActionsModal({ isOpen, onClose, goal, actions }: GoalActions
     return 'Ready to start';
   };
 
-  const completedActions = actions.filter(action => action.isCompleted);
-  const pendingActions = actions.filter(action => !action.isCompleted);
+  const completedActions = actions.filter(action => action.status === 'completed');
+  const pendingActions = actions.filter(action => action.status !== 'completed');
 
   return (
     <>

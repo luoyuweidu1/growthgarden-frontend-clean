@@ -250,13 +250,13 @@ export function ActionEditModal({ isOpen, onClose, action, goals }: ActionEditMo
               <div className="flex items-center space-x-2">
                 <div className={cn(
                   "w-3 h-3 rounded-full",
-                  action.isCompleted ? "bg-forest-500" : "bg-sage-500"
+                  action.status === 'completed' ? "bg-forest-500" : "bg-sage-500"
                 )} />
                 <span className="text-sm text-sage-600">
-                  {action.isCompleted ? "Completed" : "Pending"}
+                  {action.status === 'completed' ? "Completed" : "Pending"}
                 </span>
               </div>
-              {action.isCompleted && (
+              {action.status === 'completed' && (
                 <span className="text-sm text-sage-600">
                   Completed on: {action.completedAt ? new Date(action.completedAt).toLocaleDateString() : 'Unknown'}
                 </span>

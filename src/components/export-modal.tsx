@@ -60,7 +60,7 @@ export function ExportModal({ isOpen, onClose, goals, actions }: ExportModalProp
     const trends = generateActivityTrends(actions, 30);
     
     const xpByGoal = goals.map(goal => {
-      const goalActions = actions.filter(a => a.goalId === goal.id && a.isCompleted);
+      const goalActions = actions.filter(a => a.goalId === goal.id && a.status === 'completed');
       return {
         goalName: goal.name,
         totalXP: goalActions.reduce((sum, a) => sum + a.xpReward, 0),

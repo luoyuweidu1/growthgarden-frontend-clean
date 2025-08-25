@@ -212,11 +212,11 @@ export default function Dashboard() {
     return actionDate.toDateString() === today.toDateString();
   });
 
-  const completedToday = todaysActions.filter(action => action.isCompleted).length;
+  const completedToday = todaysActions.filter(action => action.status === 'completed').length;
 
   // Get today's actions for display
   const upcomingActions = allActions
-    .filter(action => !action.isCompleted)
+    .filter(action => action.status !== 'completed')
     .sort((a, b) => {
       if (a.dueDate && b.dueDate) {
         return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
@@ -430,13 +430,13 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center mb-2">
                   <span className="text-sm font-medium text-sage-600">Actions Completed</span>
                   <span className="text-sm font-bold text-primary">
-                    {allActions.filter(a => a.isCompleted).length}/{allActions.length}
+                    {allActions.filter(a => a.status === 'completed').length}/{allActions.length}
                   </span>
                 </div>
                 <div className="w-full bg-sage-200/50 rounded-full h-3">
                   <div 
                     className="bg-gradient-to-r from-primary to-moss-500 h-3 rounded-full transition-all duration-300" 
-                    style={{ width: `${(allActions.filter(a => a.isCompleted).length / Math.max(allActions.length, 1)) * 100}%` }}
+                    style={{ width: `${(allActions.filter(a => a.status === 'completed').length / Math.max(allActions.length, 1)) * 100}%` }}
                   />
                 </div>
               </div>
@@ -463,7 +463,7 @@ export default function Dashboard() {
               <div className="flex justify-between items-center">
                 <span className="text-sm text-sage-600">Total XP Earned</span>
                 <span className="text-lg font-bold text-primary">
-                  {allActions.filter(a => a.isCompleted).reduce((sum, action) => sum + action.xpReward, 0)} XP
+                  {allActions.filter(a => a.status === 'completed').reduce((sum, action) => sum + action.xpReward, 0)} XP
                 </span>
               </div>
               <div className="flex justify-between items-center">
@@ -496,13 +496,13 @@ export default function Dashboard() {
           </div>
           
           <div className="space-y-4">
-            {achievements.length === 0 && allActions.filter(action => action.isCompleted).length === 0 ? (
+            {achievements.length === 0 && allActions.filter(action => action.status === 'completed').length === 0 ? (
               <p className="text-sage-500 text-center py-8">{t('achievements.noActivity')}</p>
             ) : (
               <>
                 {/* Show completed actions first */}
                 {allActions
-                  .filter(action => action.isCompleted)
+                  .filter(action => action.status === 'completed')
                   .sort((a, b) => new Date(b.completedAt || 0).getTime() - new Date(a.completedAt || 0).getTime())
                   .slice(0, 3)
                   .map((action) => {

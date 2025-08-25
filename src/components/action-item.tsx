@@ -58,7 +58,7 @@ export function ActionItem({ action }: ActionItemProps) {
   };
 
   const getActionStatus = () => {
-    if (action.isCompleted) return 'completed';
+    if (action.status === 'completed') return 'completed';
     if (action.dueDate) {
       const now = new Date();
       const dueDate = new Date(action.dueDate);
